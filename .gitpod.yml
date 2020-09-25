@@ -1,0 +1,20 @@
+image:
+  file: .gitpod.Dockerfile
+
+gitConfig:
+  alias.co: clone
+  alias.ck: checkout
+  alias.cc: commit
+  alias.ss: status
+  alias.bb: branch
+  alias.ff: fetch --prune
+  alias.rr: remote -v
+  alias.unstage: reset HEAD --
+  alias.last: log -1 HEAD
+  alias.logx: log --abbrev-commit --graph --pretty=format:'%Cgreen%h %C(bold blue)%cr %Creset>>> %C(bold yellow)%<(78,trunc)%s %Creset<<< %Cred<%an>%Creset'
+  alias.logxx: log --abbrev-commit --graph --pretty=format:'%Cgreen%h %C(bold blue)%ci %Creset>>> %C(bold yellow)%<(78,trunc)%s %Creset<<< %Cred<%an>%Creset'
+  alias.cp: cherry-pick
+
+vscode:
+  extensions:
+    - jebbs.plantuml@2.13.12:q7DiD6H5NTesaWYIXmeMMQ==
