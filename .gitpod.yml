@@ -11,8 +11,10 @@ gitConfig:
   alias.rr: remote -v
   alias.unstage: reset HEAD --
   alias.last: log -1 HEAD
-  alias.logx: log --abbrev-commit --graph --pretty=format:'%Cgreen%h %C(bold blue)%cr %Creset>>> %C(bold yellow)%<(78,trunc)%s %Creset<<< %Cred<%an>%Creset'
-  alias.logxx: log --abbrev-commit --graph --pretty=format:'%Cgreen%h %C(bold blue)%ci %Creset>>> %C(bold yellow)%<(78,trunc)%s %Creset<<< %Cred<%an>%Creset'
+  alias.logx: log --abbrev-commit --graph --pretty=format:'%Cgreen%h %C(bold blue)%cr
+    %Creset>>> %C(bold yellow)%<(78,trunc)%s %Creset<<< %Cred<%an>%Creset'
+  alias.logxx: log --abbrev-commit --graph --pretty=format:'%Cgreen%h %C(bold blue)%ci
+    %Creset>>> %C(bold yellow)%<(78,trunc)%s %Creset<<< %Cred<%an>%Creset'
   alias.cp: cherry-pick
 
 vscode:
