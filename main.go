@@ -4605,8 +4605,8 @@ func initGlobals() {
 var pkg *PkgContainer
 
 type PkgContainer struct {
-	name string
-	vars []*astValueSpec
+	name  string
+	vars  []*astValueSpec
 	funcs []*Func
 }
 
@@ -4614,7 +4614,7 @@ func main() {
 	initGlobals()
 	var universe = createUniverse()
 
-	var sourceFiles = []string{"runtime.go", "/dev/stdin"}
+	var sourceFiles = []string{"runtime/runtime.go", "/dev/stdin"}
 
 	var sourceFile string
 	for _, sourceFile = range sourceFiles {

@@ -2636,7 +2636,7 @@ var pkgName string
 
 func main() {
 	var universe = createUniverse()
-	var sourceFiles = []string{"runtime.go", "/dev/stdin"}
+	var sourceFiles = []string{"runtime/runtime.go", "/dev/stdin"}
 
 	var sourceFile string
 	for _, sourceFile = range sourceFiles {
