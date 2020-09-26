@@ -20,7 +20,7 @@ func readSource(filename string) []uint8 {
 
 const (
 	O_READONLY int = 0
-	FILE_SIZE int = 2000000
+	FILE_SIZE  int = 2000000
 )
 
 // readFile 读取filename对应的文件内容
@@ -40,17 +40,17 @@ func readFile(filename string) []uint8 {
 // 如果最终能够将一个源文件解析成一个AST，那么表示源文件中代码符合编程语言文法的定义，那就是OK的！
 // 语法分析的过程中，通常也会伴随着语义分析的过程。
 
-// parserInit 初始化语法分析器parserfunc parserInit(src []uint8) {
+// parserInit 初始化语法分析器
+func parserInit(src []uint8) {
 	scannerInit(src)
 	parserNext()
 }
 
-
-// objectEntry 语法分析树中每个节点都是一个astObjecttype objectEntry struct {
+// objectEntry 语法分析树中每个节点都是一个astObject
+type objectEntry struct {
 	name string
 	obj  *astObject
 }
-
 
 var (
 	ptok *TokenContainer
@@ -59,7 +59,8 @@ var (
 
 	parserTopScope *astScope
 	parserPkgScope *astScope
-)var ptok *TokenContainer
+)
+
 func openScope() {
 	parserTopScope = astNewScope(parserTopScope)
 }
@@ -72,16 +73,16 @@ func parserConsumeComment() {
 	parserNext0()
 }
 
-
-// parseNext 解析下一个token	parserNext0()
+// parseNext 解析下一个token
+func parserNext() {
+	parserNext0()
 	if ptok.tok == ";" {
 		logf(" [parser] pointing at : \"%s\" newline (%s)\n", ptok.tok, Itoa(scannerOffset))
 	} else if ptok.tok == "IDENT" {
 		logf(" [parser] pointing at: IDENT \"%s\" (%s)\n", ptok.lit, Itoa(scannerOffset))
 	} else {
-、、bbibiabiaobiao'zbiao'zhbiao'zhibiao'zhi'fbiao'zhi'fu标识符标识符标识符biao'zhi'fubiao'zhi'fbiao'zhibiao'zhbiao'zbiaobiabib //、、 		logf(" [parser] pointing at: \"%s\" %s (%s)\n", ptok.tok, ptok.lit, Itoa(scannerOffset))
+		logf(" [parser] pointing at: \"%s\" %s (%s)\n", ptok.tok, ptok.lit, Itoa(scannerOffset))
 	}
-iiqiiqqiqi'tqi'ta其他其他其他qi'taqi'tqiqiiiqi // 
 	if ptok.tok == "COMMENT" {
 		for ptok.tok == "COMMENT" {
 			parserConsumeComment()
@@ -89,12 +90,12 @@ iiqiiqqiqi'tqi'ta其他其他其他qi'taqi'tqiqiiiqi //
 	}
 }
 
-f
-
 // parserNext0 parser使用scanner扫描一个token出来
 func parserNext0() {
 	ptok = scannerScan()
-}unc parserExpect(tok string, who string) {
+}
+
+func parserExpect(tok string, who string) {
 	if ptok.tok != tok {
 		var s = fmtSprintf("%s expected, but got %s", []string{tok, ptok.tok})
 		panic2(who, s)
@@ -1354,4 +1355,3 @@ func parserParseFile() *astFile {
 	logf(" [%s] end\n", __func__)
 	return f
 }
-
