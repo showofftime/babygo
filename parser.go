@@ -25,12 +25,16 @@ const (
 
 // readFile 读取filename对应的文件内容
 func readFile(filename string) []uint8 {
-	// @TODO check error
-	fd, _ := syscall.Open(filename, O_READONLY, 0)
+	fd, err := syscall.Open(filename, O_READONLY, 0)
+	if err != nil {
+		panic(err.Error())
+	}
 	buf := make([]uint8, FILE_SIZE, FILE_SIZE)
 
-	// @TODO check error
-	n, _ := syscall.Read(fd, buf)
+	n, err := syscall.Read(fd, buf)
+	if err != nil {
+		panic(err.Error())
+	}
 
 	readbytes := buf[0:n]
 	return readbytes
