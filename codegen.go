@@ -1,5 +1,9 @@
 package main
 
+import (
+	"syscall"
+)
+
 // --- codegen ---
 var debugCodeGen bool
 

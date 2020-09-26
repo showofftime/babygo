@@ -68,7 +68,7 @@ test-self-host: $(tmp)
 
 .PHONY: fmt
 fmt: *.go t/*.go pre/*.go
-	gofmt -w *.go t/*.go pre/*.go
+	gofmt -s -w *.go t/*.go pre/*.go
 
 .PHONY: clean
 clean:

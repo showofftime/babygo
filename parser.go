@@ -1,42 +1,65 @@
 package main
 
-// --- parser ---
-const O_READONLY int = 0
-const FILE_SIZE int = 2000000
+import (
+	"syscall"
+)
 
-func readFile(filename string) []uint8 {
-	var fd int
-	// @TODO check error
-	fd, _ = syscall.Open(filename, O_READONLY, 0)
-	var buf = make([]uint8, FILE_SIZE, FILE_SIZE)
-	var n int
-	// @TODO check error
-	n, _ = syscall.Read(fd, buf)
-	var readbytes = buf[0:n]
-	return readbytes
+// --- parser ---
+
+// parseFile 解析filename对应的源文件，返回语法解析后的astFile
+func parseFile(filename string) *astFile {
+	text := readSource(filename)
+	parserInit(text)
+	return parserParseFile()
 }
 
+// readSource 读取filename对一个的源文件内容
 func readSource(filename string) []uint8 {
 	return readFile(filename)
 }
 
-func parserInit(src []uint8) {
+const (
+	O_READONLY int = 0
+	FILE_SIZE int = 2000000
+)
+
+// readFile 读取filename对应的文件内容
+func readFile(filename string) []uint8 {
+	// @TODO check error
+	fd, _ := syscall.Open(filename, O_READONLY, 0)
+	buf := make([]uint8, FILE_SIZE, FILE_SIZE)
+
+	// @TODO check error
+	n, _ := syscall.Read(fd, buf)
+
+	readbytes := buf[0:n]
+	return readbytes
+}
+
+// parser初始化后，parser内部会不断地调用scanner来扫描出token，parser根据编程语言定义的文法进行分析，
+// 如果最终能够将一个源文件解析成一个AST，那么表示源文件中代码符合编程语言文法的定义，那就是OK的！
+// 语法分析的过程中，通常也会伴随着语义分析的过程。
+
+// parserInit 初始化语法分析器parserfunc parserInit(src []uint8) {
 	scannerInit(src)
 	parserNext()
 }
 
-type objectEntry struct {
+
+// objectEntry 语法分析树中每个节点都是一个astObjecttype objectEntry struct {
 	name string
 	obj  *astObject
 }
 
-var ptok *TokenContainer
 
-var parserUnresolved []*astIdent
+var (
+	ptok *TokenContainer
 
-var parserTopScope *astScope
-var parserPkgScope *astScope
+	parserUnresolved []*astIdent
 
+	parserTopScope *astScope
+	parserPkgScope *astScope
+)var ptok *TokenContainer
 func openScope() {
 	parserTopScope = astNewScope(parserTopScope)
 }
@@ -49,20 +72,16 @@ func parserConsumeComment() {
 	parserNext0()
 }
 
-func parserNext0() {
-	ptok = scannerScan()
-}
 
-func parserNext() {
-	parserNext0()
+// parseNext 解析下一个token	parserNext0()
 	if ptok.tok == ";" {
 		logf(" [parser] pointing at : \"%s\" newline (%s)\n", ptok.tok, Itoa(scannerOffset))
 	} else if ptok.tok == "IDENT" {
 		logf(" [parser] pointing at: IDENT \"%s\" (%s)\n", ptok.lit, Itoa(scannerOffset))
 	} else {
-		logf(" [parser] pointing at: \"%s\" %s (%s)\n", ptok.tok, ptok.lit, Itoa(scannerOffset))
+、、bbibiabiaobiao'zbiao'zhbiao'zhibiao'zhi'fbiao'zhi'fu标识符标识符标识符biao'zhi'fubiao'zhi'fbiao'zhibiao'zhbiao'zbiaobiabib //、、 		logf(" [parser] pointing at: \"%s\" %s (%s)\n", ptok.tok, ptok.lit, Itoa(scannerOffset))
 	}
-
+iiqiiqqiqi'tqi'ta其他其他其他qi'taqi'tqiqiiiqi // 
 	if ptok.tok == "COMMENT" {
 		for ptok.tok == "COMMENT" {
 			parserConsumeComment()
@@ -70,7 +89,12 @@ func parserNext() {
 	}
 }
 
-func parserExpect(tok string, who string) {
+f
+
+// parserNext0 parser使用scanner扫描一个token出来
+func parserNext0() {
+	ptok = scannerScan()
+}unc parserExpect(tok string, who string) {
 	if ptok.tok != tok {
 		var s = fmtSprintf("%s expected, but got %s", []string{tok, ptok.tok})
 		panic2(who, s)
@@ -1331,8 +1355,3 @@ func parserParseFile() *astFile {
 	return f
 }
 
-func parseFile(filename string) *astFile {
-	var text = readSource(filename)
-	parserInit(text)
-	return parserParseFile()
-}
