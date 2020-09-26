@@ -765,7 +765,7 @@ func emitExpr(e *astExpr, forceType *Type) {
 					char = '\n'
 				case '\\':
 					char = '\\'
-				case 't':
+				case 'testcases':
 					char = '\t'
 				case 'r':
 					char = '\r'

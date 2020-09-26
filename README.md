@@ -49,7 +49,7 @@ $ go build -o babygo main.go
 
 
 # Build the hello world program by babygo
-$ ./babygo < t/hello.go > /tmp/hello.s
+$ ./babygo < testcaseshello.go > /tmp/hello.s
 $ as -o hello.o /tmp/hello.s runtime.s
 $ ld -o hello hello.o
 

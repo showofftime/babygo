@@ -10,20 +10,20 @@ test: test0 test1 test2 test-self-host
 $(tmp):
 	mkdir -p $(tmp)
 
-t/expected.txt: t/test.go
-	go run t/test.go > t/expected.txt
+testcasesexpected.txt: testcasestest.go
+	go run testcasestest.go > testcasesexpected.txt
 
 precompiler: pre/precompiler.go runtime.go $(tmp)
 	go build -o $(tmp)/precompiler pre/precompiler.go && cp $(tmp)/precompiler .
 
-./tmp/precompiler_test: precompiler t/test.go
-	./precompiler < t/test.go > $(tmp)/precompiler_test.s
+./tmp/precompiler_test: precompiler testcasestest.go
+	./precompiler < testcasestest.go > $(tmp)/precompiler_test.s
 	cp $(tmp)/precompiler_test.s ./tmp/ # for debug
 	as -o $(tmp)/precompiler_test.o $(tmp)/precompiler_test.s runtime.s
 	ld -o ./tmp/precompiler_test $(tmp)/precompiler_test.o
 
 .PHONY: test0
-test0: ./tmp/precompiler_test t/expected.txt
+test0: ./tmp/precompiler_test testcasesexpected.txt
 	./test.sh ./tmp/precompiler_test
 
 babygo: main.go runtime.go runtime.s precompiler
@@ -34,8 +34,8 @@ babygo: main.go runtime.go runtime.s precompiler
 	cp $(tmp)/babygo babygo
 
 .PHONY: test1
-test1:	babygo t/test.go
-	./babygo < t/test.go > $(tmp)/test.s
+test1:	babygo testcasestest.go
+	./babygo < testcasestest.go > $(tmp)/test.s
 	cp $(tmp)/test.s ./tmp/ # for debug
 	as -o $(tmp)/test.o $(tmp)/test.s runtime.s
 	ld -o $(tmp)/test $(tmp)/test.o
@@ -51,7 +51,7 @@ babygo2: babygo
 
 .PHONY: test2
 test2: babygo2
-	./babygo2 < t/test.go > $(tmp)/test2.s
+	./babygo2 < testcasestest.go > $(tmp)/test2.s
 	as -o $(tmp)/test2.o $(tmp)/test2.s runtime.s
 	ld -o $(tmp)/test2 $(tmp)/test2.o
 	./test.sh $(tmp)/test2
@@ -67,8 +67,8 @@ test-self-host: $(tmp)
 	diff $(tmp)/bbg2.s $(tmp)/bbg3.s
 
 .PHONY: fmt
-fmt: *.go t/*.go pre/*.go
-	gofmt -s -w *.go t/*.go pre/*.go
+fmt: *.go testcases*.go pre/*.go
+	gofmt -s -w *.go testcases*.go pre/*.go
 
 .PHONY: clean
 clean:
