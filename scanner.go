@@ -1,7 +1,5 @@
 package main
 
-// --- scanner ---
-
 // scanner就是babygo的词法分析器（也常称为lexer）
 
 var (

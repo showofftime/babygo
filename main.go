@@ -1,20 +1,26 @@
 package main
 
+var sourceFiles = []string{
+	"runtime/runtime.go",
+	"/dev/stdin",
+}
+
 func main() {
-	initGlobals()
-	var universe = createUniverse()
 
-	var sourceFiles = []string{"runtime/runtime.go", "/dev/stdin"}
+	universe := createUniverse()
 
-	var sourceFile string
-	for _, sourceFile = range sourceFiles {
+	for _, sourceFile := range sourceFiles {
+
 		fmtPrintf("# file: %s\n", sourceFile)
+
 		pkg = new(PkgContainer)
 		stringIndex = 0
 		stringLiterals = nil
+
 		var f = parseFile(sourceFile)
 		resolveUniverse(f, universe)
 		pkg.name = f.Name
+
 		walk(pkg, f)
 		generateCode(pkg)
 	}

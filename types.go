@@ -49,7 +49,7 @@ func getTypeOfExpr(expr *astExpr) *Type {
 			default:
 				panic2(__func__, "ERROR 0\n")
 			}
-		case astCon:
+		case astConst:
 			switch expr.ident.Obj {
 			case gTrue, gFalse:
 				return tBool
@@ -96,9 +96,9 @@ func getTypeOfExpr(expr *astExpr) *Type {
 				panic2(__func__, "[astCallExpr] nil Obj is not allowed")
 			}
 			switch fn.Obj.Kind {
-			case astTyp:
+			case astType:
 				return e2t(fun)
-			case astFun:
+			case astFunc:
 				switch fn.Obj {
 				case gLen, gCap:
 					return tInt

@@ -1,11 +1,13 @@
 package main
 
+// ast 提供了语法分析树及节点的各种定义，能够对语言中的各种构造进行描述，如pacakge、import声明、变量定义、函数体等等
 
-// --- ast ---
-var astCon string = "Con"
-var astTyp string = "Typ"
-var astVar string = "Var"
-var astFun string = "Fun"
+var (
+	astConst = "Const"
+	astType  = "Type"
+	astVar   = "Var"
+	astFunc  = "Func"
+)
 
 type signature struct {
 	params  *astFieldList
@@ -277,14 +279,13 @@ func astNewScope(outer *astScope) *astScope {
 	return r
 }
 
-func scopeInsert(s *astScope, obj *astObject) {
+func scopeInsert(s *astScope, objs ...*astObject) {
 	if s == nil {
 		panic2(__func__, "s sholud not be nil\n")
 	}
-	var oe = new(objectEntry)
-	oe.name = obj.Name
-	oe.obj = obj
-	s.Objects = append(s.Objects, oe)
+	for _, obj := range objs {
+		s.Objects = append(s.Objects, &objectEntry{name: obj.Name, obj: obj})
+	}
 }
 
 func scopeLookup(s *astScope, name string) *astObject {

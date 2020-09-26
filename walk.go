@@ -29,10 +29,12 @@ type Variable struct {
 
 //type localoffsetint int //@TODO
 
-var stringLiterals []*stringLiteralsContainer
-var stringIndex int
-var localoffset int
-var currentFuncDecl *astFuncDecl
+var (
+	stringLiterals  []*stringLiteralsContainer
+	stringIndex     int
+	localoffset     int
+	currentFuncDecl *astFuncDecl
+)
 
 func getStringLiteral(lit *astBasicLit) *sliteral {
 	var container *stringLiteralsContainer

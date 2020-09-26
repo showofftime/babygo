@@ -196,7 +196,7 @@ func isType(expr *astExpr) bool {
 		emitComment(0, "[isType][DEBUG] expr.ident.Name = %s\n", expr.ident.Name)
 		emitComment(0, "[isType][DEBUG] expr.ident.Obj = %s,%s\n",
 			expr.ident.Obj.Name, expr.ident.Obj.Kind)
-		return expr.ident.Obj.Kind == astTyp
+		return expr.ident.Obj.Kind == astType
 	case "*astParenExpr":
 		return isType(expr.parenExpr.X)
 	case "*astStarExpr":
@@ -608,7 +608,7 @@ func emitFuncall(fun *astExpr, eArgs []*astExpr) {
 			assert(param.Type.dtype == "*astEllipsis", "internal error", __func__)
 
 			var _arg = new(Arg)
-			_arg.e = eNil
+			_arg.e = exprNil
 			_arg.t = e2t(param.Type)
 			args = append(args, _arg)
 		}
@@ -712,7 +712,7 @@ func emitExpr(e *astExpr, forceType *Type) {
 			emitAddr(e)
 			var t = getTypeOfExpr(e)
 			emitLoad(t)
-		case astCon:
+		case astConst:
 			var valSpec = ident.Obj.Decl.valueSpec
 			assert(valSpec != nil, "valSpec should not be nil", __func__)
 			assert(valSpec.Value != nil, "valSpec should not be nil", __func__)
@@ -724,7 +724,7 @@ func emitExpr(e *astExpr, forceType *Type) {
 				t = forceType
 			}
 			emitExpr(valSpec.Value, t)
-		case astTyp:
+		case astType:
 			panic2(__func__, "[*astIdent] Kind Typ should not come here")
 		default:
 			panic2(__func__, "[*astIdent] unknown Kind="+ident.Obj.Kind+" Name="+ident.Obj.Name)
@@ -765,7 +765,7 @@ func emitExpr(e *astExpr, forceType *Type) {
 					char = '\n'
 				case '\\':
 					char = '\\'
-				case 'testcases':
+				case 't':
 					char = '\t'
 				case 'r':
 					char = '\r'
@@ -1546,4 +1546,3 @@ func generateCode(pkgContainer *PkgContainer) {
 	emitData(pkgContainer.name, pkgContainer.vars, stringLiterals)
 	emitText(pkgContainer.name, pkgContainer.funcs)
 }
-

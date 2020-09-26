@@ -4,40 +4,36 @@ import (
 	"syscall"
 )
 
-// --- parser ---
+// parser 就是语法分析器，内部通过调用scanner不断扫描出token序列，并按照语言的文法进行分析，得到语法分析树ast
 
 // parseFile 解析filename对应的源文件，返回语法解析后的astFile
 func parseFile(filename string) *astFile {
-	text := readSource(filename)
+	text, err := readSource(filename)
+	if err != nil {
+		panic(err.Error())
+	}
 	parserInit(text)
 	return parserParseFile()
 }
 
-// readSource 读取filename对一个的源文件内容
-func readSource(filename string) []uint8 {
-	return readFile(filename)
-}
-
 const (
-	O_READONLY int = 0
-	FILE_SIZE  int = 2000000
+	ReadOnly    int = 0
+	MaxFileSize int = 2000000
 )
 
-// readFile 读取filename对应的文件内容
-func readFile(filename string) []uint8 {
-	fd, err := syscall.Open(filename, O_READONLY, 0)
+// readSource 读取filename对应的源文件内容
+func readSource(filename string) ([]uint8, error) {
+	fd, err := syscall.Open(filename, ReadOnly, 0)
 	if err != nil {
-		panic(err.Error())
+		return nil, err
 	}
-	buf := make([]uint8, FILE_SIZE, FILE_SIZE)
+	buf := make([]uint8, MaxFileSize, MaxFileSize)
 
 	n, err := syscall.Read(fd, buf)
 	if err != nil {
-		panic(err.Error())
+		return nil, err
 	}
-
-	readbytes := buf[0:n]
-	return readbytes
+	return buf[0:n], nil
 }
 
 // parser初始化后，parser内部会不断地调用scanner来扫描出token，parser根据编程语言定义的文法进行分析，
@@ -1201,7 +1197,7 @@ func parserParseTypeSpec() *astSpec {
 	var objDecl = new(ObjDecl)
 	objDecl.dtype = "*astTypeSpec"
 	objDecl.typeSpec = spec
-	declare(objDecl, parserTopScope, astTyp, ident)
+	declare(objDecl, parserTopScope, astType, ident)
 	var typ = parseType()
 	parserExpectSemi(__func__)
 	spec.Type = typ
@@ -1233,7 +1229,7 @@ func parserParseValueSpec(keyword string) *astSpec {
 	var objDecl = new(ObjDecl)
 	objDecl.dtype = "*astValueSpec"
 	objDecl.valueSpec = spec
-	var kind = astCon
+	var kind = astConst
 	if keyword == "var" {
 		kind = astVar
 	}
@@ -1276,7 +1272,7 @@ func parserParseFuncDecl() *astDecl {
 	var objDecl = new(ObjDecl)
 	objDecl.dtype = "*astFuncDecl"
 	objDecl.funcDecl = funcDecl
-	declare(objDecl, parserPkgScope, astFun, ident)
+	declare(objDecl, parserPkgScope, astFunc, ident)
 	return decl
 }
 
