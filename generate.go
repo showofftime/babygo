@@ -4,7 +4,6 @@ import (
 	"syscall"
 )
 
-// --- codegen ---
 var debugCodeGen bool
 
 func emitComment(indent int, format string, a ...string) {

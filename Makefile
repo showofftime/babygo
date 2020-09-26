@@ -1,82 +1,27 @@
-# Run this on Linux
-tmp = /tmp/babygo
+all: *.go runtime/*.go runtime/*.s
+	go build
 
-.PHONY: all
-all: test
+test:
+	go build -o babygo
+	./babygo < testcases/hello.go > tmp/hello.s
+	as -o tmp/hello.o tmp/hello.s runtime/runtime.s
+	ld -o tmp/hello tmp/hello.o
+	./tmp/hello
 
-.PHONY: test
-test: test0 test1 test2 test-self-host
+self:
+# 1st generation
+	go build -o babygo
+# 2nd generation
+	./babygo < *.go > tmp/babygo2.s
+	as -o tmp/babygo2.o tmp/babygo2.s runtime/runtime.s
+	ld -o ./babygo2 tmp/babygo2.o
+# 3nd generation
+	./babygo2 < *.go > tmp/babygo3.s
+	as -o tmp/babygo3.o tmp/babygo3.s runtime/runtime.s
+	diff -s tmp/babygo2.s tmp/babygo3.s
 
-$(tmp):
-	mkdir -p $(tmp)
-
-testcasesexpected.txt: testcasestest.go
-	go run testcasestest.go > testcasesexpected.txt
-
-precompiler: pre/precompiler.go runtime.go $(tmp)
-	go build -o $(tmp)/precompiler pre/precompiler.go && cp $(tmp)/precompiler .
-
-./tmp/precompiler_test: precompiler testcasestest.go
-	./precompiler < testcasestest.go > $(tmp)/precompiler_test.s
-	cp $(tmp)/precompiler_test.s ./tmp/ # for debug
-	as -o $(tmp)/precompiler_test.o $(tmp)/precompiler_test.s runtime.s
-	ld -o ./tmp/precompiler_test $(tmp)/precompiler_test.o
-
-.PHONY: test0
-test0: ./tmp/precompiler_test testcasesexpected.txt
-	./test.sh ./tmp/precompiler_test
-
-babygo: main.go runtime.go runtime.s precompiler
-	./precompiler < main.go > $(tmp)/babygo.s
-	cp $(tmp)/babygo.s ./tmp/ # for debug
-	as -o $(tmp)/babygo.o $(tmp)/babygo.s runtime.s
-	ld -o $(tmp)/babygo $(tmp)/babygo.o
-	cp $(tmp)/babygo babygo
-
-.PHONY: test1
-test1:	babygo testcasestest.go
-	./babygo < testcasestest.go > $(tmp)/test.s
-	cp $(tmp)/test.s ./tmp/ # for debug
-	as -o $(tmp)/test.o $(tmp)/test.s runtime.s
-	ld -o $(tmp)/test $(tmp)/test.o
-	./test.sh $(tmp)/test
-
-babygo2: babygo
-	./babygo < main.go > $(tmp)/2gen.s
-	diff $(tmp)/babygo.s $(tmp)/2gen.s
-	cp $(tmp)/2gen.s ./tmp/ # for debug
-	as -o $(tmp)/2gen.o $(tmp)/2gen.s runtime.s
-	ld -o $(tmp)/2gen $(tmp)/2gen.o
-	cp $(tmp)/2gen babygo2
-
-.PHONY: test2
-test2: babygo2
-	./babygo2 < testcasestest.go > $(tmp)/test2.s
-	as -o $(tmp)/test2.o $(tmp)/test2.s runtime.s
-	ld -o $(tmp)/test2 $(tmp)/test2.o
-	./test.sh $(tmp)/test2
-
-# test self hosting in a more direct way
-.PHONY: test-self-host
-test-self-host: $(tmp)
-	go build -o $(tmp)/bbg main.go
-	$(tmp)/bbg < main.go > $(tmp)/bbg2.s
-	as -o $(tmp)/bbg2.o $(tmp)/bbg2.s runtime.s
-	ld -o $(tmp)/bbg2 $(tmp)/bbg2.o
-	$(tmp)/bbg2 < main.go > $(tmp)/bbg3.s
-	diff $(tmp)/bbg2.s $(tmp)/bbg3.s
-
-.PHONY: fmt
-fmt: *.go testcases*.go pre/*.go
-	gofmt -s -w *.go testcases*.go pre/*.go
-
-.PHONY: clean
 clean:
-	rm -f ./tmp/*
-	rm -fr $(tmp)
-	rm -f precompiler babygo babygo2
+	rm ./babygo
+	rm -f tmp/*
 
-
-# to learn the official Go's assembly
-sample/sample.s: sample/sample.go
-	go tool compile -N -S sample/sample.go > sample/sample.s
+.PHONY: test self-test clean

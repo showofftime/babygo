@@ -17,7 +17,7 @@ func main() {
 		stringIndex = 0
 		stringLiterals = nil
 
-		var f = parseFile(sourceFile)
+		f := parseFile(sourceFile)
 		resolveUniverse(f, universe)
 		pkg.name = f.Name
 
