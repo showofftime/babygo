@@ -43,7 +43,7 @@ test1:	babygo t/test.go
 
 babygo2: babygo
 	./babygo < main.go > $(tmp)/2gen.s
-	diff $(tmp)/babygo.s $(tmp)/2gen.s
+	diff -s $(tmp)/babygo.s $(tmp)/2gen.s
 	cp $(tmp)/2gen.s ./tmp/ # for debug
 	as -o $(tmp)/2gen.o $(tmp)/2gen.s runtime.s
 	ld -o $(tmp)/2gen $(tmp)/2gen.o
@@ -64,7 +64,7 @@ test-self-host: $(tmp)
 	as -o $(tmp)/bbg2.o $(tmp)/bbg2.s runtime.s
 	ld -o $(tmp)/bbg2 $(tmp)/bbg2.o
 	$(tmp)/bbg2 < main.go > $(tmp)/bbg3.s
-	diff $(tmp)/bbg2.s $(tmp)/bbg3.s
+	diff -s $(tmp)/bbg2.s $(tmp)/bbg3.s
 
 .PHONY: fmt
 fmt: *.go t/*.go pre/*.go
