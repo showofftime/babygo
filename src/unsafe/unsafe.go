@@ -1,3 +1,3 @@
 package unsafe
 
-type Pointer *int
+type Pointer *Pointer
